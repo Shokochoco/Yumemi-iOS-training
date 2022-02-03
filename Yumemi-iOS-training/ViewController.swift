@@ -2,6 +2,8 @@ import UIKit
 
 class ViewController: UIViewController {
 
+    let stackViewV = UIStackView()
+    let stackViewH = UIStackView()
     let imageView = UIImageView()
     let blueLabel = UILabel()
     let redLabel = UILabel()
@@ -11,89 +13,72 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         layout()
+
     }
 
     func layout() {
-        imageView.translatesAutoresizingMaskIntoConstraints = false // AutoLayout 以前に使われていた「Autosizing」というレイアウトの仕組みを、AutoLayout に変換するかどうかを設定するフラグ。falseにしてないとコンフリクトする
+
+        stackViewV.translatesAutoresizingMaskIntoConstraints = false // AutoLayout 以前に使われていた「Autosizing」というレイアウトの仕組みを、AutoLayout に変換するかどうかを設定するフラグ。falseにしてないとコンフリクトする
+        stackViewH.translatesAutoresizingMaskIntoConstraints = false
+        imageView.translatesAutoresizingMaskIntoConstraints = false
         blueLabel.translatesAutoresizingMaskIntoConstraints = false
         redLabel.translatesAutoresizingMaskIntoConstraints = false
         closeButton.translatesAutoresizingMaskIntoConstraints = false
         reloadButton.translatesAutoresizingMaskIntoConstraints = false
 
-        view.addSubview(imageView) // 必ずviewに追加する
-        view.addSubview(blueLabel)
-        view.addSubview(redLabel)
+        view.addSubview(stackViewV) // 必ずviewに追加する
+        view.addSubview(stackViewH)
         view.addSubview(closeButton)
         view.addSubview(reloadButton)
+        // stackView同士は入れ子にしない
+        stackViewH.addArrangedSubview(blueLabel)
+        stackViewH.addArrangedSubview(redLabel)
+        stackViewV.addArrangedSubview(imageView)
 
-        let width = NSLayoutConstraint(
-            item: imageView, // 追加するview
-            attribute: .width, // 追加するviewの設定部分
-            relatedBy: .equal, // 追加するviewと基準viewの関係性
-            toItem: view, // 基準
-            attribute: .width, // 基準のどこを
-            multiplier: 0.5, // 基準に対してかける数値
-            constant: 0.0 // 制約で追加する数値
-        )
+        stackViewV.axis = .vertical
+        stackViewH.axis = .horizontal
 
-        let height = NSLayoutConstraint(
-            item: imageView,
-            attribute: .height,
-            relatedBy: .equal,
-            toItem: imageView,
-            attribute: .width,
-            multiplier: 1.0,
-            constant: 0.0
-        )
+        stackViewV.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.5).isActive = true // width,height設定しないと表示されない
+        stackViewV.heightAnchor.constraint(equalTo: stackViewV.widthAnchor, multiplier: 1.25).isActive = true
+        stackViewV.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        stackViewV.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
 
-        let centerX = NSLayoutConstraint(
-            item: imageView,
-            attribute: .centerX,
-            relatedBy: .equal,
-            toItem: view,
-            attribute: .centerX,
-            multiplier: 1.0,
-            constant: 0.0
-        )
-
-        let centerY = NSLayoutConstraint(
-            item: imageView,
-            attribute: .centerY,
-            relatedBy: .equal,
-            toItem: view,
-            attribute: .centerY,
-            multiplier: 1.0,
-            constant: 0.0
-        )
-
-        NSLayoutConstraint.activate([width, height, centerX, centerY])
+        imageView.widthAnchor.constraint(equalTo: stackViewV.widthAnchor).isActive = true
+        imageView.heightAnchor.constraint(equalTo: stackViewV.widthAnchor).isActive = true
+        imageView.topAnchor.constraint(equalTo: stackViewV.topAnchor).isActive = true
         imageView.backgroundColor = .black
 
-        blueLabel.widthAnchor.constraint(equalTo: self.imageView.widthAnchor, multiplier: 0.5).isActive = true
-        blueLabel.heightAnchor.constraint(equalTo: self.imageView.heightAnchor, multiplier: 0.25).isActive = true
-        blueLabel.topAnchor.constraint(equalTo: self.imageView.bottomAnchor).isActive = true
-        blueLabel.leadingAnchor.constraint(equalTo: self.imageView.leadingAnchor).isActive = true
-        blueLabel.backgroundColor = .blue
+        stackViewH.widthAnchor.constraint(equalTo: stackViewV.widthAnchor).isActive = true
+        stackViewH.heightAnchor.constraint(equalTo: stackViewV.widthAnchor, multiplier: 0.25).isActive = true
+        stackViewH.topAnchor.constraint(equalTo: imageView.bottomAnchor).isActive = true
+        stackViewH.trailingAnchor.constraint(equalTo: imageView.trailingAnchor).isActive = true
 
-        redLabel.widthAnchor.constraint(equalTo: self.imageView.widthAnchor, multiplier: 0.5).isActive = true
-        redLabel.heightAnchor.constraint(equalTo: self.imageView.heightAnchor, multiplier: 0.25).isActive = true
-        redLabel.topAnchor.constraint(equalTo: self.imageView.bottomAnchor).isActive = true
-        redLabel.trailingAnchor.constraint(equalTo: self.imageView.trailingAnchor).isActive = true
-        redLabel.backgroundColor = .red
+        blueLabel.widthAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 0.5).isActive = true
+        blueLabel.heightAnchor.constraint(equalTo: stackViewH.heightAnchor).isActive = true
+        blueLabel.text = "blue"
+        blueLabel.textColor = .tintColor
+        blueLabel.textAlignment = NSTextAlignment.center
 
-        closeButton.widthAnchor.constraint(equalTo: self.imageView.widthAnchor, multiplier: 0.5).isActive = true
-        closeButton.heightAnchor.constraint(equalTo: self.imageView.heightAnchor, multiplier: 0.25).isActive = true
-        closeButton.topAnchor.constraint(equalTo: self.imageView.bottomAnchor, constant: 80).isActive = true
-        closeButton.centerXAnchor.constraint(equalTo: self.blueLabel.centerXAnchor).isActive = true
+        redLabel.widthAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 0.5).isActive = true
+        redLabel.heightAnchor.constraint(equalTo: imageView.heightAnchor, multiplier: 0.25).isActive = true
+        redLabel.trailingAnchor.constraint(equalTo: imageView.trailingAnchor).isActive = true
+        redLabel.text = "Red"
+        redLabel.textColor = .red
+        redLabel.textAlignment = NSTextAlignment.center
+
+        closeButton.widthAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 0.5).isActive = true
+        closeButton.heightAnchor.constraint(equalTo: imageView.heightAnchor, multiplier: 0.25).isActive = true
+        closeButton.topAnchor.constraint(equalTo: stackViewH.bottomAnchor, constant: 80).isActive = true
+        closeButton.centerXAnchor.constraint(equalTo: blueLabel.centerXAnchor).isActive = true
         closeButton.setTitle("Close", for: UIControl.State.normal)
         closeButton.setTitleColor(.tintColor, for: UIControl.State.normal)
 
-        reloadButton.widthAnchor.constraint(equalTo: self.imageView.widthAnchor, multiplier: 0.5).isActive = true
-        reloadButton.heightAnchor.constraint(equalTo: self.imageView.heightAnchor, multiplier: 0.25).isActive = true
-        reloadButton.topAnchor.constraint(equalTo: self.imageView.bottomAnchor, constant: 80).isActive = true
-        reloadButton.centerXAnchor.constraint(equalTo: self.redLabel.centerXAnchor).isActive = true
+        reloadButton.widthAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 0.5).isActive = true
+        reloadButton.heightAnchor.constraint(equalTo: imageView.heightAnchor, multiplier: 0.25).isActive = true
+        reloadButton.topAnchor.constraint(equalTo: stackViewH.bottomAnchor, constant: 80).isActive = true
+        reloadButton.centerXAnchor.constraint(equalTo: redLabel.centerXAnchor).isActive = true
         reloadButton.setTitle("Reload", for: UIControl.State.normal)
         reloadButton.setTitleColor(.tintColor, for: UIControl.State.normal)
+
     }
 }
-
