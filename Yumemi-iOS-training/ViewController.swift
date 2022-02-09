@@ -1,4 +1,5 @@
 import UIKit
+import YumemiWeather
 
 class ViewController: UIViewController {
 
@@ -13,7 +14,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         layout()
-
+        buttonAction()
     }
 
     func layout() {
@@ -46,7 +47,6 @@ class ViewController: UIViewController {
         imageView.widthAnchor.constraint(equalTo: stackViewV.widthAnchor).isActive = true
         imageView.heightAnchor.constraint(equalTo: stackViewV.widthAnchor).isActive = true
         imageView.topAnchor.constraint(equalTo: stackViewV.topAnchor).isActive = true
-        imageView.backgroundColor = .black
 
         stackViewH.widthAnchor.constraint(equalTo: stackViewV.widthAnchor).isActive = true
         stackViewH.heightAnchor.constraint(equalTo: stackViewV.widthAnchor, multiplier: 0.25).isActive = true
@@ -81,4 +81,27 @@ class ViewController: UIViewController {
         reloadButton.setTitleColor(.tintColor, for: UIControl.State.normal)
 
     }
+
+    func buttonAction() {
+
+        let action = UIAction { _ in
+            let image = YumemiWeather.fetchWeather()
+
+            switch image {
+            case "sunny":
+                self.imageView.image = UIImage(named: image)?.withRenderingMode(.alwaysTemplate)
+                self.imageView.tintColor = .red
+            case "cloudy":
+                self.imageView.image = UIImage(named: image)?.withRenderingMode(.alwaysTemplate)
+                self.imageView.tintColor = .lightGray
+            case "rainy":
+                self.imageView.image = UIImage(named: image)?.withRenderingMode(.alwaysTemplate)
+                self.imageView.tintColor = .blue
+            default:
+                self.imageView.tintColor = .black
+            }
+        }
+        self.reloadButton.addAction(action, for: .touchUpInside)
+    }
+
 }
