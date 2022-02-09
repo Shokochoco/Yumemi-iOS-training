@@ -83,26 +83,25 @@ class ViewController: UIViewController {
     }
 
     func buttonAction() {
-        reloadButton.addTarget(self, action: #selector(self.buttonTapped(_:)), for: .touchUpInside)
-    }
 
-    @objc func buttonTapped(_ sender : Any) {
+        let action = UIAction { _ in
+            let image = YumemiWeather.fetchWeather()
 
-        let image = YumemiWeather.fetchWeather()
-
-        switch image {
-        case "sunny":
-            imageView.image = UIImage(named: image)?.withRenderingMode(.alwaysTemplate)
-            imageView.tintColor = .red
-        case "cloudy":
-            imageView.image = UIImage(named: image)?.withRenderingMode(.alwaysTemplate)
-            imageView.tintColor = .lightGray
-        case "rainy":
-            imageView.image = UIImage(named: image)?.withRenderingMode(.alwaysTemplate)
-            imageView.tintColor = .blue
-        default:
-            imageView.tintColor = .black
+            switch image {
+            case "sunny":
+                self.imageView.image = UIImage(named: image)?.withRenderingMode(.alwaysTemplate)
+                self.imageView.tintColor = .red
+            case "cloudy":
+                self.imageView.image = UIImage(named: image)?.withRenderingMode(.alwaysTemplate)
+                self.imageView.tintColor = .lightGray
+            case "rainy":
+                self.imageView.image = UIImage(named: image)?.withRenderingMode(.alwaysTemplate)
+                self.imageView.tintColor = .blue
+            default:
+                self.imageView.tintColor = .black
+            }
         }
-
+        self.reloadButton.addAction(action, for: .touchUpInside)
     }
+
 }
