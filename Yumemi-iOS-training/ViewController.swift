@@ -1,6 +1,10 @@
 import UIKit
 import YumemiWeather
 
+enum APIMessage: Error {
+   static let message1 = "エラーだよ"
+}
+
 class ViewController: UIViewController {
 
     let stackViewV = UIStackView()
@@ -85,23 +89,37 @@ class ViewController: UIViewController {
     func buttonAction() {
 
         let action = UIAction { _ in
-            let image = YumemiWeather.fetchWeather()
-
-            switch image {
-            case "sunny":
-                self.imageView.image = UIImage(named: image)?.withRenderingMode(.alwaysTemplate)
-                self.imageView.tintColor = .red
-            case "cloudy":
-                self.imageView.image = UIImage(named: image)?.withRenderingMode(.alwaysTemplate)
-                self.imageView.tintColor = .lightGray
-            case "rainy":
-                self.imageView.image = UIImage(named: image)?.withRenderingMode(.alwaysTemplate)
-                self.imageView.tintColor = .blue
-            default:
-                self.imageView.tintColor = .black
+            do {
+                let image = try YumemiWeather.fetchWeather(at: "")
+                switch image {
+                case "sunny":
+                    self.imageView.image = UIImage(named: image)?.withRenderingMode(.alwaysTemplate)
+                    self.imageView.tintColor = .red
+                case "cloudy":
+                    self.imageView.image = UIImage(named: image)?.withRenderingMode(.alwaysTemplate)
+                    self.imageView.tintColor = .lightGray
+                case "rainy":
+                    self.imageView.image = UIImage(named: image)?.withRenderingMode(.alwaysTemplate)
+                    self.imageView.tintColor = .blue
+                default:
+                    self.imageView.tintColor = .black
+                }
+            } catch YumemiWeatherError.unknownError {
+                self.alertAction(message: APIMessage.message1)
+            } catch {
+                return 
             }
+
         }
         self.reloadButton.addAction(action, for: .touchUpInside)
+    }
+
+    func alertAction(message: String) {
+        let alert = UIAlertController(title: "error", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
+            self.dismiss(animated: true, completion: nil)
+        }))
+        present(alert, animated: true, completion: nil)
     }
 
 }
