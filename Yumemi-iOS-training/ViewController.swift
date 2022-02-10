@@ -1,10 +1,6 @@
 import UIKit
 import YumemiWeather
 
-enum APIMessage: Error {
-   static let message1 = "エラーだよ"
-}
-
 class ViewController: UIViewController {
 
     let stackViewV = UIStackView()
@@ -106,6 +102,8 @@ class ViewController: UIViewController {
                 }
             } catch YumemiWeatherError.unknownError {
                 self.alertAction(message: APIMessage.message1)
+            } catch YumemiWeatherError.invalidParameterError {
+                self.alertAction(message: APIMessage.message2)
             } catch {
                 return 
             }

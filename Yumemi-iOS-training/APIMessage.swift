@@ -1,8 +1,6 @@
-//
-//  APIMessage.swift
-//  Yumemi-iOS-training
-//
-//  Created by 鈴木淳子 on 2022/02/10.
-//
-
 import Foundation
+
+enum APIMessage: Error {
+   static let message1 = "エラー1"
+   static let message2 = "エラー2"
+}
