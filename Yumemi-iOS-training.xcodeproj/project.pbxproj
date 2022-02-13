@@ -17,7 +17,8 @@
 		D8949B0727A4FEAA006FBCA9 /* Yumemi_iOS_trainingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8949B0627A4FEAA006FBCA9 /* Yumemi_iOS_trainingUITests.swift */; };
 		D8949B0927A4FEAA006FBCA9 /* Yumemi_iOS_trainingUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8949B0827A4FEAA006FBCA9 /* Yumemi_iOS_trainingUITestsLaunchTests.swift */; };
 		D8949B1727A505FE006FBCA9 /* YumemiWeather in Frameworks */ = {isa = PBXBuildFile; productRef = D8949B1627A505FE006FBCA9 /* YumemiWeather */; };
-		D8949B1D27B81EDF006FBCA9 /* APIModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8949B1C27B81EDF006FBCA9 /* APIModels.swift */; };
+		D8949B1D27B81EDF006FBCA9 /* Weather.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8949B1C27B81EDF006FBCA9 /* Weather.swift */; };
+		D8A105D827B92562002083F9 /* Parameter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A105D727B92562002083F9 /* Parameter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,7 +52,8 @@
 		D8949B0227A4FEAA006FBCA9 /* Yumemi-iOS-trainingUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Yumemi-iOS-trainingUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8949B0627A4FEAA006FBCA9 /* Yumemi_iOS_trainingUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Yumemi_iOS_trainingUITests.swift; sourceTree = "<group>"; };
 		D8949B0827A4FEAA006FBCA9 /* Yumemi_iOS_trainingUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Yumemi_iOS_trainingUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		D8949B1C27B81EDF006FBCA9 /* APIModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIModels.swift; sourceTree = "<group>"; };
+		D8949B1C27B81EDF006FBCA9 /* Weather.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Weather.swift; sourceTree = "<group>"; };
+		D8A105D727B92562002083F9 /* Parameter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parameter.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,7 +108,8 @@
 				D8949AE527A4FEA7006FBCA9 /* AppDelegate.swift */,
 				D8949AE727A4FEA7006FBCA9 /* SceneDelegate.swift */,
 				D8949AE927A4FEA7006FBCA9 /* ViewController.swift */,
-				D8949B1C27B81EDF006FBCA9 /* APIModels.swift */,
+				D8949B1C27B81EDF006FBCA9 /* Weather.swift */,
+				D8A105D727B92562002083F9 /* Parameter.swift */,
 				D8949AEB27A4FEA7006FBCA9 /* Main.storyboard */,
 				D8949AEE27A4FEAA006FBCA9 /* Assets.xcassets */,
 				D8949AF027A4FEAA006FBCA9 /* LaunchScreen.storyboard */,
@@ -269,7 +272,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D8949B1D27B81EDF006FBCA9 /* APIModels.swift in Sources */,
+				D8949B1D27B81EDF006FBCA9 /* Weather.swift in Sources */,
+				D8A105D827B92562002083F9 /* Parameter.swift in Sources */,
 				D8949AEA27A4FEA7006FBCA9 /* ViewController.swift in Sources */,
 				D8949AE627A4FEA7006FBCA9 /* AppDelegate.swift in Sources */,
 				D8949AE827A4FEA7006FBCA9 /* SceneDelegate.swift in Sources */,
