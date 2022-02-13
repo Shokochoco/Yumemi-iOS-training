@@ -1,3 +1,4 @@
+import Foundation
 import UIKit
 import YumemiWeather
 
@@ -85,31 +86,92 @@ class ViewController: UIViewController {
     func buttonAction() {
 
         let action = UIAction { _ in
+
             do {
-                let image = try YumemiWeather.fetchWeather(at: "")
-                switch image {
+                // 日付
+                let date = Date()
+                let df = DateFormatter()
+                df.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
+                let dateString = df.string(from: date)
+
+                let parameter = Parameter(area: "tokyo", date: dateString)
+                // YumemiWeather.fetchWeather(ここで使うjsonStringにencode)
+                let encoder = JSONEncoder()
+                encoder.outputFormatting = .prettyPrinted
+                guard let jsonData = try? encoder.encode(parameter) else {
+                    fatalError("Failed to encode to JSON.")
+                }
+                guard let jsonString = String(data: jsonData, encoding: .utf8) else { return }
+                let weather = try YumemiWeather.fetchWeather(jsonString)
+                // 戻り値のjsonStringをSwiftオブジェクトにdecodeする
+                guard let weatherData = weather.data(using: .utf8),
+                      let weatherModel = self.toWeatherModel(weatherData) else { return }
+
+                self.blueLabel.text = String(weatherModel.minTemp)
+                self.redLabel.text = String(weatherModel.maxTemp)
+
+                switch weatherModel.weather {
                 case "sunny":
-                    self.imageView.image = UIImage(named: image)?.withRenderingMode(.alwaysTemplate)
+                    self.imageView.image = UIImage(named: weatherModel.weather)?.withRenderingMode(.alwaysTemplate)
                     self.imageView.tintColor = .red
                 case "cloudy":
-                    self.imageView.image = UIImage(named: image)?.withRenderingMode(.alwaysTemplate)
+                    self.imageView.image = UIImage(named: weatherModel.weather)?.withRenderingMode(.alwaysTemplate)
                     self.imageView.tintColor = .lightGray
                 case "rainy":
-                    self.imageView.image = UIImage(named: image)?.withRenderingMode(.alwaysTemplate)
+                    self.imageView.image = UIImage(named: weatherModel.weather)?.withRenderingMode(.alwaysTemplate)
                     self.imageView.tintColor = .blue
                 default:
                     self.imageView.tintColor = .black
                 }
+                // Modelそのままバージョン
+                //                let weather = try YumemiWeather.fetchWeather(jsonString)
+                //                let weatherData = weather.data(using: .utf8)
+                //                let weatherDecoded = try! JSONDecoder().decode(Weather.self, from: weatherData!)
+                //
+                //                self.blueLabel.text = String(weatherDecoded.min_temp)
+                //                self.redLabel.text = String(weatherDecoded.max_temp)
+
+                //                switch weatherDecoded.weather {
+                //                case "sunny":
+                //                    self.imageView.image = UIImage(named: weatherDecoded.weather)?.withRenderingMode(.alwaysTemplate)
+                //                    self.imageView.tintColor = .red
+                //                case "cloudy":
+                //                    self.imageView.image = UIImage(named: weatherDecoded.weather)?.withRenderingMode(.alwaysTemplate)
+                //                    self.imageView.tintColor = .lightGray
+                //                case "rainy":
+                //                    self.imageView.image = UIImage(named: weatherDecoded.weather)?.withRenderingMode(.alwaysTemplate)
+                //                    self.imageView.tintColor = .blue
+                //                default:
+                //                    self.imageView.tintColor = .black
+                //                }
+
             } catch YumemiWeatherError.unknownError {
-                self.alertAction(message: APIMessage.message1)
+                self.alertAction(message: "エラー1")
             } catch YumemiWeatherError.invalidParameterError {
-                self.alertAction(message: APIMessage.message2)
+                self.alertAction(message: "エラー2")
             } catch {
-                return 
+                return
             }
 
         }
         self.reloadButton.addAction(action, for: .touchUpInside)
+    }
+    // WeatherModelに入れ替えたバージョン
+    func toWeatherModel(_ weatherData: Data) -> WeatherModel? {
+
+        do {
+            let weatherDecoded = try JSONDecoder().decode(Weather.self, from: weatherData)
+
+            let maxTemp = weatherDecoded.max_temp
+            let minTemp = weatherDecoded.min_temp
+            let weather = weatherDecoded.weather
+            let date = weatherDecoded.date
+
+            let weatherModel = WeatherModel(weather: weather, maxTemp: maxTemp, minTemp: minTemp, date: date)
+            return weatherModel
+        } catch {
+            return nil
+        }
     }
 
     func alertAction(message: String) {
