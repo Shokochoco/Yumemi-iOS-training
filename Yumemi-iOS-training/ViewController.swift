@@ -1,3 +1,4 @@
+import Foundation
 import UIKit
 import YumemiWeather
 
@@ -85,27 +86,48 @@ class ViewController: UIViewController {
     func buttonAction() {
 
         let action = UIAction { _ in
+
             do {
-                let image = try YumemiWeather.fetchWeather(at: "")
-                switch image {
+                // 日付
+                let date = Date()
+                let df = DateFormatter()
+                df.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
+                let dateString = df.string(from: date)
+
+                let parameter = Parameter(area: "tokyo", date: dateString)
+                // YumemiWeather.fetchWeather(ここで使うjsonStringにencode)
+                let encoder = JSONEncoder()
+                encoder.outputFormatting = .prettyPrinted
+                let jsonData = try encoder.encode(parameter)
+                guard let jsonString = String(data: jsonData, encoding: .utf8) else { return }
+
+                let weather = try YumemiWeather.fetchWeather(jsonString)
+                let weatherData = weather.data(using: .utf8)
+                let weatherDecoded = try! JSONDecoder().decode(Weather.self, from: weatherData!)
+                
+                self.blueLabel.text = String(weatherDecoded.min_temp)
+                self.redLabel.text = String(weatherDecoded.max_temp)
+
+                switch weatherDecoded.weather {
                 case "sunny":
-                    self.imageView.image = UIImage(named: image)?.withRenderingMode(.alwaysTemplate)
+                    self.imageView.image = UIImage(named: weatherDecoded.weather)?.withRenderingMode(.alwaysTemplate)
                     self.imageView.tintColor = .red
                 case "cloudy":
-                    self.imageView.image = UIImage(named: image)?.withRenderingMode(.alwaysTemplate)
+                    self.imageView.image = UIImage(named: weatherDecoded.weather)?.withRenderingMode(.alwaysTemplate)
                     self.imageView.tintColor = .lightGray
                 case "rainy":
-                    self.imageView.image = UIImage(named: image)?.withRenderingMode(.alwaysTemplate)
+                    self.imageView.image = UIImage(named: weatherDecoded.weather)?.withRenderingMode(.alwaysTemplate)
                     self.imageView.tintColor = .blue
                 default:
                     self.imageView.tintColor = .black
                 }
+
             } catch YumemiWeatherError.unknownError {
-                self.alertAction(message: APIMessage.message1)
+                self.alertAction(message: "エラー1")
             } catch YumemiWeatherError.invalidParameterError {
-                self.alertAction(message: APIMessage.message2)
+                self.alertAction(message: "エラー2")
             } catch {
-                return 
+                return
             }
 
         }
