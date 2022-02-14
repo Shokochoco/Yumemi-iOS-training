@@ -15,7 +15,8 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         layout()
-        buttonAction()
+        reloadButtonAction()
+        closeButtonAction()
     }
 
     func layout() {
@@ -83,7 +84,7 @@ class ViewController: UIViewController {
 
     }
 
-    func buttonAction() {
+    func reloadButtonAction() {
 
         let action = UIAction { _ in
 
@@ -140,6 +141,13 @@ class ViewController: UIViewController {
             self.dismiss(animated: true, completion: nil)
         }))
         present(alert, animated: true, completion: nil)
+    }
+
+    func closeButtonAction() {
+        let action = UIAction { _ in
+            self.dismiss(animated: true, completion: nil)
+        }
+        self.closeButton.addAction(action, for: .touchUpInside)
     }
 
 }
