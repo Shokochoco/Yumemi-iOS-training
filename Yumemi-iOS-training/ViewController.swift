@@ -11,6 +11,7 @@ class ViewController: UIViewController {
     let redLabel = UILabel()
     let closeButton = UIButton()
     let reloadButton = UIButton()
+    var closeBtnFlag: Bool = false
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -145,9 +146,18 @@ class ViewController: UIViewController {
 
     func closeButtonAction() {
         let action = UIAction { _ in
+            self.closeBtnFlag = true
             self.dismiss(animated: true, completion: nil)
         }
         self.closeButton.addAction(action, for: .touchUpInside)
+    }
+    // AlertControllerを閉じた時に下層Controllerまで道連れされるのを防ぐ
+    override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
+        if self.presentedViewController != nil || self.closeBtnFlag {
+            // 上に重なってるControllerだけ閉じる
+            super.dismiss(animated: flag, completion: completion)
+            self.closeBtnFlag = false
+        }
     }
 
 }
