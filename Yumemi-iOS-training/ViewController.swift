@@ -15,7 +15,8 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         layout()
-        buttonAction()
+        reloadButtonAction()
+        closeButtonAction()
     }
 
     func layout() {
@@ -83,7 +84,7 @@ class ViewController: UIViewController {
 
     }
 
-    func buttonAction() {
+    func reloadButtonAction() {
 
         let action = UIAction { _ in
 
@@ -136,10 +137,15 @@ class ViewController: UIViewController {
 
     func alertAction(message: String) {
         let alert = UIAlertController(title: "error", message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { _ in
-            self.dismiss(animated: true, completion: nil)
-        }))
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         present(alert, animated: true, completion: nil)
+    }
+
+    func closeButtonAction() {
+        let action = UIAction { _ in
+            self.dismiss(animated: true, completion: nil)
+        }
+        self.closeButton.addAction(action, for: .touchUpInside)
     }
 
 }
