@@ -19,11 +19,25 @@ class Yumemi_iOS_trainingTests: XCTestCase {
     }
 
     func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
+        let presenter = WeatherPresenter(weatherModel: WeatherModelImpl())
+        XCTAssert((presenter.getAPI() != nil))
+        // 天気予報がsunnyだったら、画面に晴れ画像が表示されること
+        let sunnyExpectation = self.expectation(description: "sunny")
+        sunnyExpectation.fulfill()
+
+        self.wait(for: [sunnyExpectation], timeout: 0.1)
+        // 天気予報がcloudyだったら、画面に曇り画像が表示されること
+        let cloudyExpectation = self.expectation(description: "cloudy")
+        cloudyExpectation.fulfill()
+
+        self.wait(for: [cloudyExpectation], timeout: 0.1)
+        // 天気予報がrainyだったら、画面に雨画像が表示されること
+        let rainyExpectation = self.expectation(description: "rainy")
+        rainyExpectation.fulfill()
+
+        self.wait(for: [rainyExpectation], timeout: 0.1)
+        // 天気予報の最高気温がUILabelに反映されること
+        // 天気予報の最低気温がUILabelに反映されること
     }
 
     func testPerformanceExample() throws {

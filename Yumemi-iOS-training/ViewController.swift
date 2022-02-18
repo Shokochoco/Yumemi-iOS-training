@@ -4,6 +4,8 @@ import YumemiWeather
 
 class ViewController: UIViewController {
 
+    var presenter: WeatherPresenter?
+
     let stackViewV = UIStackView()
     let stackViewH = UIStackView()
     let imageView = UIImageView()
@@ -14,6 +16,7 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        presenter = WeatherPresenter(weatherModel: WeatherModelImpl())
         layout()
         reloadButtonAction()
         closeButtonAction()
@@ -21,7 +24,6 @@ class ViewController: UIViewController {
     }
 
     func layout() {
-
         stackViewV.translatesAutoresizingMaskIntoConstraints = false // AutoLayout 以前に使われていた「Autosizing」というレイアウトの仕組みを、AutoLayout に変換するかどうかを設定するフラグ。falseにしてないとコンフリクトする
         stackViewH.translatesAutoresizingMaskIntoConstraints = false
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -93,12 +95,6 @@ class ViewController: UIViewController {
         self.reloadButton.addAction(action, for: .touchUpInside)
     }
 
-    func alertAction(message: String) {
-        let alert = UIAlertController(title: "error", message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-        present(alert, animated: true, completion: nil)
-    }
-
     func closeButtonAction() {
         let action = UIAction { _ in
             self.dismiss(animated: true, completion: nil)
@@ -111,48 +107,35 @@ class ViewController: UIViewController {
         }
 
     func appearWeather() {
-        do {
-            // 日付
-            let date = Date()
-            let df = DateFormatter()
-            df.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
-            let dateString = df.string(from: date)
 
-            let parameter = Parameter(area: "tokyo", date: dateString)
-            // YumemiWeather.fetchWeather(ここで使うjsonStringにencode)
-            let encoder = JSONEncoder()
-            encoder.outputFormatting = .prettyPrinted
-            let jsonData = try encoder.encode(parameter)
-            guard let jsonString = String(data: jsonData, encoding: .utf8) else { return }
+        if let weatherInfo = presenter?.getAPI() {
+            self.blueLabel.text = String(weatherInfo.min_temp)
+            self.redLabel.text = String(weatherInfo.max_temp)
 
-            let weather = try YumemiWeather.fetchWeather(jsonString)
-            let weatherData = weather.data(using: .utf8)
-            let weatherDecoded = try! JSONDecoder().decode(Weather.self, from: weatherData!)
-
-            self.blueLabel.text = String(weatherDecoded.min_temp)
-            self.redLabel.text = String(weatherDecoded.max_temp)
-
-            switch weatherDecoded.weather {
+            switch weatherInfo.weather {
             case "sunny":
-                self.imageView.image = UIImage(named: weatherDecoded.weather)?.withRenderingMode(.alwaysTemplate)
+                self.imageView.image = UIImage(named: weatherInfo.weather)?.withRenderingMode(.alwaysTemplate)
                 self.imageView.tintColor = .red
             case "cloudy":
-                self.imageView.image = UIImage(named: weatherDecoded.weather)?.withRenderingMode(.alwaysTemplate)
+                self.imageView.image = UIImage(named: weatherInfo.weather)?.withRenderingMode(.alwaysTemplate)
                 self.imageView.tintColor = .lightGray
             case "rainy":
-                self.imageView.image = UIImage(named: weatherDecoded.weather)?.withRenderingMode(.alwaysTemplate)
+                self.imageView.image = UIImage(named: weatherInfo.weather)?.withRenderingMode(.alwaysTemplate)
                 self.imageView.tintColor = .blue
             default:
                 self.imageView.tintColor = .black
             }
 
-        } catch YumemiWeatherError.unknownError {
+        } else if YumemiWeatherError.invalidParameterError != nil {
             self.alertAction(message: "エラー1")
-        } catch YumemiWeatherError.invalidParameterError {
+        } else if YumemiWeatherError.unknownError != nil {
             self.alertAction(message: "エラー2")
-        } catch {
-            return
         }
+    }
 
+    func alertAction(message: String) {
+        let alert = UIAlertController(title: "error", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        present(alert, animated: true, completion: nil)
     }
 }
