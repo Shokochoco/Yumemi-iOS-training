@@ -22,6 +22,7 @@
 		D8A105DA27B95B09002083F9 /* InitialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A105D927B95B09002083F9 /* InitialViewController.swift */; };
 		D8A105DC27BBD7D1002083F9 /* WeatherModelImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A105DB27BBD7D1002083F9 /* WeatherModelImpl.swift */; };
 		D8A105DE27BD4BCC002083F9 /* WeatherPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A105DD27BD4BCC002083F9 /* WeatherPresenter.swift */; };
+		D8A105E027BFF954002083F9 /* MockWeatherImpl.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A105DF27BFF954002083F9 /* MockWeatherImpl.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +61,7 @@
 		D8A105D927B95B09002083F9 /* InitialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialViewController.swift; sourceTree = "<group>"; };
 		D8A105DB27BBD7D1002083F9 /* WeatherModelImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherModelImpl.swift; sourceTree = "<group>"; };
 		D8A105DD27BD4BCC002083F9 /* WeatherPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherPresenter.swift; sourceTree = "<group>"; };
+		D8A105DF27BFF954002083F9 /* MockWeatherImpl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWeatherImpl.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +118,7 @@
 				D8949AE927A4FEA7006FBCA9 /* ViewController.swift */,
 				D8A105DD27BD4BCC002083F9 /* WeatherPresenter.swift */,
 				D8A105DB27BBD7D1002083F9 /* WeatherModelImpl.swift */,
+				D8A105DF27BFF954002083F9 /* MockWeatherImpl.swift */,
 				D8A105D927B95B09002083F9 /* InitialViewController.swift */,
 				D8949B1C27B81EDF006FBCA9 /* Weather.swift */,
 				D8A105D727B92562002083F9 /* Parameter.swift */,
@@ -286,6 +289,7 @@
 				D8949B1D27B81EDF006FBCA9 /* Weather.swift in Sources */,
 				D8A105D827B92562002083F9 /* Parameter.swift in Sources */,
 				D8A105DC27BBD7D1002083F9 /* WeatherModelImpl.swift in Sources */,
+				D8A105E027BFF954002083F9 /* MockWeatherImpl.swift in Sources */,
 				D8949AEA27A4FEA7006FBCA9 /* ViewController.swift in Sources */,
 				D8949AE627A4FEA7006FBCA9 /* AppDelegate.swift in Sources */,
 				D8949AE827A4FEA7006FBCA9 /* SceneDelegate.swift in Sources */,

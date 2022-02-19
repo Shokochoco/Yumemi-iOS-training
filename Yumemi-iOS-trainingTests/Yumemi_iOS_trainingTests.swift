@@ -18,26 +18,15 @@ class Yumemi_iOS_trainingTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-    func testExample() throws {
-        let presenter = WeatherPresenter(weatherModel: WeatherModelImpl())
-        XCTAssert((presenter.getAPI() != nil))
-        // 天気予報がsunnyだったら、画面に晴れ画像が表示されること
-        let sunnyExpectation = self.expectation(description: "sunny")
-        sunnyExpectation.fulfill()
+    func testGetAPI() throws {
+        let testWeather: Weather = Weather(weather: "sunny", max_temp: 20, min_temp: 5 , date: "2020-04-01T12:00:00+09:00")
 
-        self.wait(for: [sunnyExpectation], timeout: 0.1)
-        // 天気予報がcloudyだったら、画面に曇り画像が表示されること
-        let cloudyExpectation = self.expectation(description: "cloudy")
-        cloudyExpectation.fulfill()
+        let mockWeatherImpl = MockWeatherImpl(weathers: testWeather)
 
-        self.wait(for: [cloudyExpectation], timeout: 0.1)
-        // 天気予報がrainyだったら、画面に雨画像が表示されること
-        let rainyExpectation = self.expectation(description: "rainy")
-        rainyExpectation.fulfill()
-
-        self.wait(for: [rainyExpectation], timeout: 0.1)
-        // 天気予報の最高気温がUILabelに反映されること
-        // 天気予報の最低気温がUILabelに反映されること
+        let weather = mockWeatherImpl.getAPI(area: "tokyo")
+        XCTAssertEqual(weather?.weather, "sunny")
+        XCTAssertEqual(weather?.max_temp, 20)
+        XCTAssertEqual(weather?.min_temp, 5)
     }
 
     func testPerformanceExample() throws {

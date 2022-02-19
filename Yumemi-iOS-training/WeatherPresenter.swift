@@ -9,8 +9,8 @@ class WeatherPresenter: NSObject {
         self.weatherModel = weatherModel
     }
 
-    func getAPI() -> Weather? {
-        return weatherModel?.getAPI()
+    func getAPI(area: String) -> Weather? {
+        return weatherModel?.getAPI(area: area)
     }
 
 }

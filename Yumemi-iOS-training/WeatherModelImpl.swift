@@ -3,12 +3,12 @@ import UIKit
 import YumemiWeather
 
 protocol WeatherModel {
-    func getAPI()  -> Weather?
+    func getAPI(area: String)  -> Weather?
 }
 
 class WeatherModelImpl: WeatherModel {
 
-    func getAPI() -> Weather? {
+    func getAPI(area: String) -> Weather? {
         
         do {
             // 日付
@@ -17,7 +17,7 @@ class WeatherModelImpl: WeatherModel {
             df.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
             let dateString = df.string(from: date)
 
-            let parameter = Parameter(area: "tokyo", date: dateString)
+            let parameter = Parameter(area: area, date: dateString)
             // YumemiWeather.fetchWeather(ここで使うjsonStringにencode)
             let encoder = JSONEncoder()
             encoder.outputFormatting = .prettyPrinted

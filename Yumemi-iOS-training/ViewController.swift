@@ -108,7 +108,7 @@ class ViewController: UIViewController {
 
     func appearWeather() {
 
-        if let weatherInfo = presenter?.getAPI() {
+        if let weatherInfo = presenter?.getAPI(area: "tokyo") {
             self.blueLabel.text = String(weatherInfo.min_temp)
             self.redLabel.text = String(weatherInfo.max_temp)
 
