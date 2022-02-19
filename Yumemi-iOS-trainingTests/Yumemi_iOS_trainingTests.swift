@@ -18,15 +18,15 @@ class Yumemi_iOS_trainingTests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-    func testGetAPI() throws {
-        let testWeather: Weather = Weather(weather: "sunny", max_temp: 20, min_temp: 5 , date: "2020-04-01T12:00:00+09:00")
+    func testPresenter() throws {
+        let testWeather: Weather = Weather(weather: "sunny", max_temp: 20, min_temp: 5,date: "2020-04-01T12:00:00+09:00")
+        let presenter = WeatherPresenter(weatherModel: MockWeatherImpl(weathers: testWeather))
+        let weather = presenter.getAPI()
+        XCTAssertEqual(weather, testWeather)
+    }
 
-        let mockWeatherImpl = MockWeatherImpl(weathers: testWeather)
-
-        let weather = mockWeatherImpl.getAPI(area: "tokyo")
-        XCTAssertEqual(weather?.weather, "sunny")
-        XCTAssertEqual(weather?.max_temp, 20)
-        XCTAssertEqual(weather?.min_temp, 5)
+    func testViewController() throws {
+        
     }
 
     func testPerformanceExample() throws {
@@ -35,5 +35,10 @@ class Yumemi_iOS_trainingTests: XCTestCase {
             // Put the code you want to measure the time of here.
         }
     }
+}
 
+extension Weather: Equatable {
+    public static func == (lhs: Weather, rhs: Weather) -> Bool {
+        return lhs.weather == rhs.weather && lhs.max_temp == rhs.max_temp && lhs.min_temp == rhs.min_temp && lhs.date == rhs.date
+    }
 }
