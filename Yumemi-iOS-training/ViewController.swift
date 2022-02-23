@@ -11,6 +11,7 @@ class ViewController: UIViewController {
     let redLabel = UILabel()
     let closeButton = UIButton()
     let reloadButton = UIButton()
+    let activityIndicatorView = UIActivityIndicatorView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -18,6 +19,14 @@ class ViewController: UIViewController {
         reloadButtonAction()
         closeButtonAction()
         NotificationCenter.default.addObserver(self, selector: #selector(foreground(notification:)), name: UIApplication.willEnterForegroundNotification, object: nil)
+        showIndicater()
+    }
+
+    func showIndicater() {
+        activityIndicatorView.center = view.center
+        activityIndicatorView.style = UIActivityIndicatorView.Style.large
+        activityIndicatorView.color = .gray
+        view.addSubview(activityIndicatorView)
     }
 
     func layout() {
@@ -108,51 +117,72 @@ class ViewController: UIViewController {
 
     @objc func foreground(notification: Notification ) {
         appearWeather()
-        }
+    }
 
     func appearWeather() {
-        do {
-            // 日付
-            let date = Date()
-            let df = DateFormatter()
-            df.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
-            let dateString = df.string(from: date)
 
-            let parameter = Parameter(area: "tokyo", date: dateString)
-            // YumemiWeather.fetchWeather(ここで使うjsonStringにencode)
-            let encoder = JSONEncoder()
-            encoder.outputFormatting = .prettyPrinted
-            let jsonData = try encoder.encode(parameter)
-            guard let jsonString = String(data: jsonData, encoding: .utf8) else { return }
+        activityIndicatorView.startAnimating()
+        var weatherDecoded:Weather?
 
-            let weather = try YumemiWeather.fetchWeather(jsonString)
-            let weatherData = weather.data(using: .utf8)
-            let weatherDecoded = try! JSONDecoder().decode(Weather.self, from: weatherData!)
+        DispatchQueue.global(qos: DispatchQoS.QoSClass.userInitiated).async { [weak self] in
+            // 非同期処理などを実行
+            do {
 
-            self.blueLabel.text = String(weatherDecoded.min_temp)
-            self.redLabel.text = String(weatherDecoded.max_temp)
+                let date = Date()
+                let df = DateFormatter()
+                df.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
+                let dateString = df.string(from: date)
 
-            switch weatherDecoded.weather {
-            case "sunny":
-                self.imageView.image = UIImage(named: weatherDecoded.weather)?.withRenderingMode(.alwaysTemplate)
-                self.imageView.tintColor = .red
-            case "cloudy":
-                self.imageView.image = UIImage(named: weatherDecoded.weather)?.withRenderingMode(.alwaysTemplate)
-                self.imageView.tintColor = .lightGray
-            case "rainy":
-                self.imageView.image = UIImage(named: weatherDecoded.weather)?.withRenderingMode(.alwaysTemplate)
-                self.imageView.tintColor = .blue
-            default:
-                self.imageView.tintColor = .black
+                let parameter = Parameter(area: "tokyo", date: dateString)
+                // YumemiWeather.fetchWeather(ここで使うjsonStringにencode)
+                let encoder = JSONEncoder()
+                encoder.outputFormatting = .prettyPrinted
+                let jsonData = try encoder.encode(parameter)
+                guard let jsonString = String(data: jsonData, encoding: .utf8) else { return }
+
+                let weather = try YumemiWeather.syncFetchWeather(jsonString)
+                let weatherData = weather.data(using: .utf8)
+                weatherDecoded = try! JSONDecoder().decode(Weather.self, from: weatherData!)
+
+                // 非同期処理などが終了したらメインスレッドでUI更新アニメーション終了
+                DispatchQueue.main.async {
+
+                    self?.blueLabel.text = String(weatherDecoded?.min_temp ?? 0)
+                    self?.redLabel.text = String(weatherDecoded?.max_temp ?? 0)
+
+                    switch weatherDecoded?.weather {
+                    case "sunny":
+                        self?.imageView.image = UIImage(named: weatherDecoded?.weather ?? "sunny")?.withRenderingMode(.alwaysTemplate)
+                        self?.imageView.tintColor = .red
+                    case "cloudy":
+                        self?.imageView.image = UIImage(named: weatherDecoded?.weather ?? "cloudy")?.withRenderingMode(.alwaysTemplate)
+                        self?.imageView.tintColor = .lightGray
+                    case "rainy":
+                        self?.imageView.image = UIImage(named: weatherDecoded?.weather ?? "rainy")?.withRenderingMode(.alwaysTemplate)
+                        self?.imageView.tintColor = .blue
+                    default:
+                        self?.imageView.tintColor = .black
+                    }
+
+                    self?.activityIndicatorView.stopAnimating()
+                }
+
+            } catch YumemiWeatherError.unknownError {
+                DispatchQueue.main.async {
+                self?.alertAction(message: "エラー1")
+                self?.activityIndicatorView.stopAnimating()
+                }
+            } catch YumemiWeatherError.invalidParameterError {
+                DispatchQueue.main.async {
+                self?.alertAction(message: "エラー2")
+                self?.activityIndicatorView.stopAnimating()
+                }
+            } catch {
+                return
             }
 
-        } catch YumemiWeatherError.unknownError {
-            self.alertAction(message: "エラー1")
-        } catch YumemiWeatherError.invalidParameterError {
-            self.alertAction(message: "エラー2")
-        } catch {
-            return
         }
 
     }
+
 }
