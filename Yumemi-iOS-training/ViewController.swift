@@ -11,7 +11,7 @@ class ViewController: UIViewController {
     let redLabel = UILabel()
     let closeButton = UIButton()
     let reloadButton = UIButton()
-    var activityIndicatorView = UIActivityIndicatorView()
+    let activityIndicatorView = UIActivityIndicatorView()
 
     override func viewDidLoad() {
         super.viewDidLoad()
