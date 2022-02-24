@@ -13,6 +13,10 @@ class ViewController: UIViewController {
     let reloadButton = UIButton()
     let activityIndicatorView = UIActivityIndicatorView()
 
+    deinit {
+        print("called deinit")
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         layout()
@@ -96,21 +100,21 @@ class ViewController: UIViewController {
 
     func reloadButtonAction() {
 
-        let action = UIAction { _ in
-            self.appearWeather()
+        let action = UIAction { [weak self] _ in
+            self?.appearWeather()
         }
         self.reloadButton.addAction(action, for: .touchUpInside)
     }
 
     func alertAction(message: String) {
         let alert = UIAlertController(title: "error", message: message, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil)) // weakにする？
         present(alert, animated: true, completion: nil)
     }
 
     func closeButtonAction() {
-        let action = UIAction { _ in
-            self.dismiss(animated: true, completion: nil)
+        let action = UIAction { [weak self] _ in
+            self?.dismiss(animated: true, completion: nil)
         }
         self.closeButton.addAction(action, for: .touchUpInside)
     }
