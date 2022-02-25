@@ -20,6 +20,7 @@
 		D8949B1D27B81EDF006FBCA9 /* Weather.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8949B1C27B81EDF006FBCA9 /* Weather.swift */; };
 		D8A105D827B92562002083F9 /* Parameter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A105D727B92562002083F9 /* Parameter.swift */; };
 		D8A105DA27B95B09002083F9 /* InitialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A105D927B95B09002083F9 /* InitialViewController.swift */; };
+		D8D1C8C627C8A2D300B44DE3 /* APIModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D1C8C527C8A2D300B44DE3 /* APIModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +57,7 @@
 		D8949B1C27B81EDF006FBCA9 /* Weather.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Weather.swift; sourceTree = "<group>"; };
 		D8A105D727B92562002083F9 /* Parameter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Parameter.swift; sourceTree = "<group>"; };
 		D8A105D927B95B09002083F9 /* InitialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InitialViewController.swift; sourceTree = "<group>"; };
+		D8D1C8C527C8A2D300B44DE3 /* APIModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,6 +112,7 @@
 				D8949AE527A4FEA7006FBCA9 /* AppDelegate.swift */,
 				D8949AE727A4FEA7006FBCA9 /* SceneDelegate.swift */,
 				D8949AE927A4FEA7006FBCA9 /* ViewController.swift */,
+				D8D1C8C527C8A2D300B44DE3 /* APIModel.swift */,
 				D8A105D927B95B09002083F9 /* InitialViewController.swift */,
 				D8949B1C27B81EDF006FBCA9 /* Weather.swift */,
 				D8A105D727B92562002083F9 /* Parameter.swift */,
@@ -275,6 +278,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D8D1C8C627C8A2D300B44DE3 /* APIModel.swift in Sources */,
 				D8A105DA27B95B09002083F9 /* InitialViewController.swift in Sources */,
 				D8949B1D27B81EDF006FBCA9 /* Weather.swift in Sources */,
 				D8A105D827B92562002083F9 /* Parameter.swift in Sources */,
