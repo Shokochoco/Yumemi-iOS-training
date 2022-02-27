@@ -135,7 +135,7 @@ class ViewController: UIViewController {
 
 }
 
-extension ViewController: indicatorDelegate {
+extension ViewController: IndicatorDelegate {
 
     func indicatorStart() {
         DispatchQueue.main.async {

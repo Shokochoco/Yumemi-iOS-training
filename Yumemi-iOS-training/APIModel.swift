@@ -6,7 +6,7 @@ protocol WeatherDelegate: AnyObject {
     func failError(error: YumemiWeatherError)
 }
 
-protocol indicatorDelegate: AnyObject {
+protocol IndicatorDelegate: AnyObject {
     func indicatorStart()
     func indicatorStop()
 }
@@ -14,7 +14,7 @@ protocol indicatorDelegate: AnyObject {
 class APIModel {
     
     weak var delegate: WeatherDelegate?
-    weak var indicatorDelegate: indicatorDelegate?
+    weak var indicatorDelegate: IndicatorDelegate?
 
     func getAPI() {
         
