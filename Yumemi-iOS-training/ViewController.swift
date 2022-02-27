@@ -2,7 +2,7 @@ import Foundation
 import UIKit
 import YumemiWeather
 
-class ViewController: UIViewController, WeatherDelegate {
+class ViewController: UIViewController {
 
     let stackViewV = UIStackView()
     let stackViewH = UIStackView()
@@ -22,6 +22,7 @@ class ViewController: UIViewController, WeatherDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         apiModel.delegate = self
+        apiModel.indicatorDelegate = self
 
         layout()
         reloadButtonAction()
@@ -103,14 +104,16 @@ class ViewController: UIViewController, WeatherDelegate {
     }
 
     func reloadButtonAction() {
+        DispatchQueue.global(qos: DispatchQoS.QoSClass.userInitiated).async { [weak self] in
 
-        let action = UIAction { [weak self] _ in
-            self?.apiModel.getAPI() // これがないと呼び出せない
-                DispatchQueue.main.async {
-                    self?.activityIndicatorView.startAnimating()
-                }
+            let action = UIAction { [weak self] _ in
+                self?.apiModel.getAPI() // これがないと呼び出せない
+            }
+            DispatchQueue.main.async {
+                self?.reloadButton.addAction(action, for: .touchUpInside)
+            }
+
         }
-        self.reloadButton.addAction(action, for: .touchUpInside)
     }
 
     func alertAction(message: String) {
@@ -130,11 +133,30 @@ class ViewController: UIViewController, WeatherDelegate {
         apiModel.getAPI()
     }
 
-    func appearWeather(weatherDecoded: Weather) {
- //       activityIndicatorView.startAnimating()
-        // 非同期処理などが終了したらメインスレッドでUI更新アニメーション終了
-        DispatchQueue.main.async {
+}
 
+extension ViewController: indicatorDelegate {
+
+    func indicatorStart() {
+        DispatchQueue.main.async {
+            self.activityIndicatorView.startAnimating()
+        }
+    }
+
+    func indicatorStop() {
+        DispatchQueue.main.async {
+            self.activityIndicatorView.stopAnimating()
+        }
+    }
+
+}
+
+extension ViewController: WeatherDelegate {
+
+    func appearWeather(weatherDecoded: Weather) {
+
+        DispatchQueue.main.async {
+            
             self.blueLabel.text = String(weatherDecoded.min_temp)
             self.redLabel.text = String(weatherDecoded.max_temp)
 
@@ -152,20 +174,18 @@ class ViewController: UIViewController, WeatherDelegate {
                 self.imageView.tintColor = .black
             }
 
-            self.activityIndicatorView.stopAnimating()
-        }
-   }
-
-    func failError(error: YumemiWeatherError) {
-        if error  == YumemiWeatherError.unknownError {
-          alertAction(message: "エラー1")
-          activityIndicatorView.stopAnimating()
-
-        } else if error  == YumemiWeatherError.invalidParameterError {
-               alertAction(message: "エラー2")
-              activityIndicatorView.stopAnimating()
-
         }
     }
 
+    func failError(error: YumemiWeatherError) {
+        DispatchQueue.main.async {
+            if error  == YumemiWeatherError.unknownError {
+                self.alertAction(message: "エラー1")
+
+            } else if error  == YumemiWeatherError.invalidParameterError {
+                self.alertAction(message: "エラー2")
+
+            }
+        }
+    }
 }
