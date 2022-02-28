@@ -1,26 +1,26 @@
 import Foundation
 import YumemiWeather
 
-protocol WeatherDelegate: AnyObject {
-    func appearWeather(weatherDecoded: Weather)
-    func failError(error: YumemiWeatherError)
-}
-
-protocol indicatorDelegate: AnyObject {
+protocol IndicatorDelegate: AnyObject {
     func indicatorStart()
     func indicatorStop()
 }
 
 class APIModel {
-    
-    weak var delegate: WeatherDelegate?
-    weak var indicatorDelegate: indicatorDelegate?
 
-    func getAPI() {
+    var weatherDecoded: Weather?
+    var error: YumemiWeatherError?
+
+    weak var indicatorDelegate: IndicatorDelegate?
+
+    func getAPI(completion: @escaping (_ weatherDecoded: Weather?, _ error: YumemiWeatherError?) -> Void) {
         
-        var weatherDecoded: Weather?
-
         DispatchQueue.global(qos: DispatchQoS.QoSClass.userInitiated).async { [weak self] in
+
+            if self?.error != nil {
+                self?.error = nil
+            }
+
             self?.indicatorDelegate?.indicatorStart()
             do {
 
@@ -38,20 +38,19 @@ class APIModel {
 
                 let weather = try YumemiWeather.syncFetchWeather(jsonString)
                 if let weatherData = weather.data(using: .utf8) {
-                    weatherDecoded = try! JSONDecoder().decode(Weather.self, from: weatherData)
-                    self?.delegate?.appearWeather(weatherDecoded: weatherDecoded!)
+                    self?.weatherDecoded = try! JSONDecoder().decode(Weather.self, from: weatherData)
                 } else { return }
 
             } catch YumemiWeatherError.unknownError {
-                self?.delegate?.failError(error: YumemiWeatherError.unknownError)
+                self?.error = YumemiWeatherError.unknownError
             } catch YumemiWeatherError.invalidParameterError {
-                self?.delegate?.failError(error: YumemiWeatherError.invalidParameterError)
+                self?.error = YumemiWeatherError.invalidParameterError
             } catch {
                 return
             }
+            completion(self?.weatherDecoded, self?.error)
             self?.indicatorDelegate?.indicatorStop()
         }
 
     }
-
 }

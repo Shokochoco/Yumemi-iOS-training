@@ -21,7 +21,6 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        apiModel.delegate = self
         apiModel.indicatorDelegate = self
 
         layout()
@@ -107,8 +106,21 @@ class ViewController: UIViewController {
         DispatchQueue.global(qos: DispatchQoS.QoSClass.userInitiated).async { [weak self] in
 
             let action = UIAction { [weak self] _ in
-                self?.apiModel.getAPI() // これがないと呼び出せない
+                
+                self?.apiModel.getAPI { weatherDecoded, error  in
+
+                    if let error = error {
+                        self?.failError(error: error)
+                        return
+                    }
+
+                    if let weatherDecoded = weatherDecoded {
+                        self?.appearWeather(weatherDecoded: weatherDecoded)
+                    }
+
+                }
             }
+
             DispatchQueue.main.async {
                 self?.reloadButton.addAction(action, for: .touchUpInside)
             }
@@ -130,33 +142,22 @@ class ViewController: UIViewController {
     }
 
     @objc func foreground(notification: Notification) {
-        apiModel.getAPI()
-    }
+        apiModel.getAPI { weatherDecoded, error in
+            if let error = error {
+                self.failError(error: error)
+                return
+            }
 
-}
-
-extension ViewController: indicatorDelegate {
-
-    func indicatorStart() {
-        DispatchQueue.main.async {
-            self.activityIndicatorView.startAnimating()
+            if let weatherDecoded = weatherDecoded {
+                self.appearWeather(weatherDecoded: weatherDecoded)
+            }
         }
     }
-
-    func indicatorStop() {
-        DispatchQueue.main.async {
-            self.activityIndicatorView.stopAnimating()
-        }
-    }
-
-}
-
-extension ViewController: WeatherDelegate {
 
     func appearWeather(weatherDecoded: Weather) {
 
         DispatchQueue.main.async {
-            
+
             self.blueLabel.text = String(weatherDecoded.min_temp)
             self.redLabel.text = String(weatherDecoded.max_temp)
 
@@ -188,4 +189,21 @@ extension ViewController: WeatherDelegate {
             }
         }
     }
+
+}
+
+extension ViewController: IndicatorDelegate {
+
+    func indicatorStart() {
+        DispatchQueue.main.async {
+            self.activityIndicatorView.startAnimating()
+        }
+    }
+
+    func indicatorStop() {
+        DispatchQueue.main.async {
+            self.activityIndicatorView.stopAnimating()
+        }
+    }
+
 }
