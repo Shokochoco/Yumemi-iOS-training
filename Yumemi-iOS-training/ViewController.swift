@@ -21,7 +21,6 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        apiModel.indicatorDelegate = self
 
         layout()
         reloadButtonAction()
@@ -103,22 +102,20 @@ class ViewController: UIViewController {
     }
 
     func reloadButtonAction() {
+
         DispatchQueue.global(qos: DispatchQoS.QoSClass.userInitiated).async { [weak self] in
-
             let action = UIAction { [weak self] _ in
-                
-                self?.apiModel.getAPI { weatherDecoded, error  in
+                self?.activityIndicatorView.startAnimating()
+                self?.apiModel.getAPI { result in
 
-                    if let error = error {
-                        self?.failError(error: error)
-                        return
-                    }
-
-                    if let weatherDecoded = weatherDecoded {
+                    switch result {
+                    case .success(let weatherDecoded):
                         self?.appearWeather(weatherDecoded: weatherDecoded)
+                    case .failure(let error):
+                        self?.failError(error: error)
                     }
-
                 }
+                
             }
 
             DispatchQueue.main.async {
@@ -142,15 +139,15 @@ class ViewController: UIViewController {
     }
 
     @objc func foreground(notification: Notification) {
-        apiModel.getAPI { weatherDecoded, error in
-            if let error = error {
+        self.apiModel.getAPI { result in
+
+            switch result {
+            case .success(let weatherDecoded):
+                self.appearWeather(weatherDecoded: weatherDecoded)
+            case .failure(let error):
                 self.failError(error: error)
-                return
             }
 
-            if let weatherDecoded = weatherDecoded {
-                self.appearWeather(weatherDecoded: weatherDecoded)
-            }
         }
     }
 
@@ -174,35 +171,20 @@ class ViewController: UIViewController {
             default:
                 self.imageView.tintColor = .black
             }
-
+            self.activityIndicatorView.stopAnimating()
         }
+
     }
 
     func failError(error: YumemiWeatherError) {
         DispatchQueue.main.async {
             if error  == YumemiWeatherError.unknownError {
                 self.alertAction(message: "エラー1")
-
+                self.activityIndicatorView.stopAnimating()
             } else if error  == YumemiWeatherError.invalidParameterError {
                 self.alertAction(message: "エラー2")
-
+                self.activityIndicatorView.stopAnimating()
             }
-        }
-    }
-
-}
-
-extension ViewController: IndicatorDelegate {
-
-    func indicatorStart() {
-        DispatchQueue.main.async {
-            self.activityIndicatorView.startAnimating()
-        }
-    }
-
-    func indicatorStop() {
-        DispatchQueue.main.async {
-            self.activityIndicatorView.stopAnimating()
         }
     }
 
